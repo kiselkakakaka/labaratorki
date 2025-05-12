@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta label="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Client Management</title>
+</head>
+<style>
+    *{
+    margin: 0;
+    padding: 0;
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+body{
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+form{  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 2%;
+}
+
+input{
+    width: 220px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #757575;
+    padding: 0 10px;
+}
+
+.btn-custom{
+    color: #ffe9f4;
+    padding: 10px;
+    border-radius: 5px;
+    border:none;
+    background-color: palevioletred;
+}
+
+.btn-custom:hover{
+    background-color: rgb(246, 74, 103);
+    color: #000;
+}
+
+.btn-custom:active{
+    background-color: #ffbdde;
+    border: 1px solid #fff;
+    color: #fff;
+}
+
+h2{
+    text-align: center;
+    margin-top: 5%;
+    margin-bottom: 2%;
+}
+
+.card{
+    background-color: #ffbdde;
+    border: 1px solid #ff5cae;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 1%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+img{
+    width: 200px;
+    height: auto;
+    background-color: #fff;
+    border-radius: 50px;
+}
+</style>
+<body>
+    
+    <h1>Client Management</h1>
+
+    
+    <div class="card">
+        <div>
+            
+            <h2>Users</h2>
+            
+            <ul id="client-list"></ul>
+        </div>
+        <div>
+            <img src="/static/img/users.png" alt="">
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div>
+            <img src="/static/img/create.png" alt="">
+        </div>
+        <div>
+            
+            <h2>Create Client</h2>
+            
+            <form id="create-client-form">
+                
+                <input type="text" id="client_id" placeholder="Username" required />
+                
+                <input type="email" id="email" placeholder="Email" required />
+                
+                <input type="text" id="full_name" placeholder="Full Label" />
+                
+                <input type="access_key" id="access_key" placeholder="AccessKey" required />
+                
+                <button type="submit" class="btn-custom">Create Client</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div>
+            
+            <h2>Update Client</h2>
+           
+            <form id="update-client-form">
+                
+                <input type="number" id="update-client-id" placeholder="Client ID" required />
+                
+                <input type="text" id="update-client_id" placeholder="Username" />
+                
+                <input type="email" id="update-email" placeholder="Email" />
+                
+                <input type="text" id="update-full_name" placeholder="Full Label" />
+                
+                <input type="access_key" id="update-access_key" placeholder="AccessKey" />
+                
+                <button type="submit" class="btn-custom">Update Client</button>
+            </form>
+        </div>
+        <div>
+            <img src="/static/img/updated.png" alt="">
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div>
+            <img src="/static/img/delete.png" alt="">
+        </div>
+        <div>
+            
+            <h2>Delete Client</h2>
+            
+            <form id="delete-client-form">
+                
+                <input type="number" id="delete-client-id" placeholder="Client ID" required />
+                
+                <button type="submit" class="btn-custom">Delete Client</button>
+            </form>
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div>
+            <h2>Login</h2>
+            <form id="signin-form">
+                <input type="text" id="signin-client_id" placeholder="Username" required />
+                <input type="access_key" id="signin-access_key" placeholder="AccessKey" required />
+                <button type="submit" class="btn-custom">Login</button>
+            </form>
+            <p id="status"></p>
+        </div>
+        <div>
+            <img src="/static/img/signin.png" alt="">
+        </div>
+    </div>
+
+    
+    <div class="card">
+        <div>
+            <img src="/static/img/info.png" alt="">
+        </div>
+        <div>
+            <h2>Get Client Info</h2>
+            <button id="get-client-info" class="btn-custom">Get Client Info</button>
+            <pre id="userInfo"></pre>
+        </div>
+    </div>
+
+    <script>
+        const apiBaseUrl = "http://localhost:8000";
+
+        async function fetchUsers() {
+            const response = await fetch(`${apiBaseUrl}/users/`);
+            const users = await response.json();
+            const userList = document.getElementById("client-list");
+            userList.innerHTML = "";
+            users.forEach((client) => {
+                const li = document.createElement("li");
+                li.textContent = `${client.id}: ${client.client_id} (${client.email})`;
+                userList.appendChild(li);
+            });
+        }
+
+        document.getElementById("create-client-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const client_id = document.getElementById("client_id").value;
+            const email = document.getElementById("email").value;
+            const full_name = document.getElementById("full_name").value;
+            const access_key = document.getElementById("access_key").value;
+
+            const response = await fetch(`${apiBaseUrl}/register/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ client_id, email, full_name, access_key }),
+            });
+
+            if (response.ok) {
+                alert("Client created successfully");
+                fetchUsers();
+            } else {
+                alert("Error creating client");
+            }
+        });
+
+        document.getElementById("update-client-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById("update-client-id").value;
+            const client_id = document.getElementById("update-client_id").value;
+            const email = document.getElementById("update-email").value;
+            const full_name = document.getElementById("update-full_name").value;
+            const access_key = document.getElementById("update-access_key").value;
+
+            const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ client_id, email, full_name, access_key }),
+            });
+
+            if (response.ok) {
+                alert("Client updated successfully");
+                fetchUsers();
+            } else {
+                alert("Error updating client");
+            }
+        });
+
+        document.getElementById("delete-client-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const userId = document.getElementById("delete-client-id").value;
+
+            const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
+                method: "DELETE",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                }
+            });
+
+            if (response.ok) {
+                alert("Client deleted successfully");
+                fetchUsers();
+            } else {
+                alert("Error deleting client");
+            }
+        });
+
+        document.getElementById("signin-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const client_id = document.getElementById("signin-client_id").value;
+            const access_key = document.getElementById("signin-access_key").value;
+            const response = await fetch('http://localhost:8000/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                    'client_id': client_id,
+                    'access_key': access_key
+                })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                accessToken = data.access_token;
+                document.getElementById('status').textContent = "Login successful!";
+            } else {
+                document.getElementById('status').textContent = "Login error!";
+            }
+        });
+
+        document.getElementById("get-client-info").addEventListener("click", async () => {
+            if (!accessToken) {
+                document.getElementById('userInfo').textContent = "Please log in first!";
+                return;
+            }
+
+            const response = await fetch('http://localhost:8000/users/me', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${accessToken}` }
+            });
+
+            const data = await response.json();
+            document.getElementById('userInfo').textContent = JSON.stringify(data, null, 2);
+        });
+
+        fetchUsers();
+    </script>
+</body>
+</html>

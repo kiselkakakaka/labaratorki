@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta label="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client Management</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            padding: 10px 100px;
+            display: flex;
+            flex-direction: column;
+            background-color: #dbdbdb;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .header .hd-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .header .hd-info h2 {
+            margin-bottom: 0;
+        }
+
+        .creat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 20px;
+            margin: auto;
+        }
+
+        .creat .form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px 50px;
+            width: 450px;
+        }
+
+        .creat .form input {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 350px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+        }
+
+        .creat .form button {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 350px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+            transition: 0.3s all ease-in;
+        }
+
+        .creat .form button:hover {
+            background-color: #fff;
+        }
+
+        .creat h2 {
+            margin-bottom: 0;
+        }
+
+        .creat .list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 40px 50px;
+            width: 450px;
+        }
+
+        .btn {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 350px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+            transition: 0.3s all ease-in;
+        }
+
+        .btn:hover {
+            background-color: #fff;
+        }
+
+        .btn2 {
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            width: 100px;
+            padding: 10px;
+            border: 1px #bbb solid;
+            border-radius: 5px;
+            transition: 0.3s all ease-in;
+        }
+
+        .btn2:hover {
+            background-color: #fff;
+        }
+
+        .creat .form .client-info-display {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .creat .form .client-info p {
+            margin: 0.5rem 0;
+        }
+
+        .creat .form .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    
+    <div class="header">
+        <h1>Client Management</h1>
+        <div class="hd-info">
+            <h2>Login Status</h2>
+            <p id="signin-status">Not logged in</p>
+            <button id="logout-button" style="display: none;" class="btn2">Logout</button>
+        </div>
+    </div>
+
+    
+    <div class="creat" id="signin-section">
+        <h2>Login</h2>
+        <form class="form" id="signin-form">
+            <input type="text" id="signin-client_id" placeholder="Username" required />
+            <input type="access_key" id="signin-access_key" placeholder="AccessKey" required />
+            <button type="submit">Login</button>
+        </form>
+        <p id="status"></p>
+    </div>
+
+    <div id="authenticated-content" style="display: none;" class="creat">
+        
+        <div class="creat">
+            
+            <h2>Users</h2>
+            
+            <ul id="client-list" class="list"></ul>
+        </div>
+        
+        <div class="creat">
+            <h2>Create Client</h2>
+            
+            <form class="form" id="create-client-form">
+                <input type="text" id="client_id" placeholder="Username" required />
+                <input type="email" id="email" placeholder="Email" required />
+                <input type="text" id="full_name" placeholder="Full Label" />
+                <input type="access_key" id="access_key" placeholder="AccessKey" required />
+                <button type="submit">Create Client</button>
+            </form>
+        </div>
+
+        
+        <div class="creat">
+            <h2>Update Client</h2>
+            
+            <form class="form" id="update-client-form">
+                <input type="number" id="update-client-id" placeholder="Client ID" required />
+                <input type="text" id="update-client_id" placeholder="Username" />
+                <input type="email" id="update-email" placeholder="Email" />
+                <input type="text" id="update-full_name" placeholder="Full Label" />
+                <input type="access_key" id="update-access_key" placeholder="AccessKey" />
+                <button type="submit">Update Client</button>
+            </form>
+        </div>
+
+        
+        <div class="creat">
+            <h2>Delete Client</h2>
+            
+            <form class="form" id="delete-client-form">
+                <input type="number" id="delete-client-id" placeholder="Client ID" required />
+                <button type="submit">Delete Client</button>
+            </form>
+        </div>
+
+        
+        <div class="creat">
+            <h2>Get Client Info</h2>
+            <button class="btn" id="get-client-info">Get My Info</button>
+            <form class="form">
+                <div id="userInfo" class="client-info-display"></div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const apiBaseUrl = "http://localhost:8000";
+        let accessToken = localStorage.getItem('accessToken');
+
+        function updateUIState() {
+            const isLoggedIn = !!accessToken;
+            document.getElementById('authenticated-content').style.display = isLoggedIn ? 'block' : 'none';
+            document.getElementById('signin-section').style.display = isLoggedIn ? 'none' : 'block';
+            document.getElementById('signin-status').textContent = isLoggedIn ? 'Logged in' : 'Not logged in';
+            document.getElementById('logout-button').style.display = isLoggedIn ? 'block' : 'none';
+            if (isLoggedIn) {
+                fetchUsers().catch(console.error);
+            } else {
+                document.getElementById("client-list").innerHTML = "";
+            }
+        }
+
+        async function handleApiError(response) {
+            if (response.status === 401) {
+                accessToken = null;
+                localStorage.removeItem('accessToken');
+                updateUIState();
+                throw new Error('Не удалось выполнить аутентификацию. Пожалуйста, войдите в систему еще раз.');
+            }
+            const error = await response.json();
+            throw new Error(error.detail || 'Произошла ошибка');
+        }
+
+        async function fetchUsers() {
+            try {
+                const response = await fetch(`${apiBaseUrl}/users/`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                const users = await response.json();
+                const userList = document.getElementById("client-list");
+                userList.innerHTML = "";
+                users.forEach((client) => {
+                    const li = document.createElement("li");
+                    li.textContent = `${client.id}: ${client.client_id} (${client.email})`;
+                    userList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Ошибка при выборке пользователей:", error);
+                alert(error.message);
+            }
+        }
+
+        document.getElementById("create-client-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const formData = {
+                    client_id: document.getElementById("client_id").value,
+                    email: document.getElementById("email").value,
+                    full_name: document.getElementById("full_name").value,
+                    access_key: document.getElementById("access_key").value
+                };
+                const response = await fetch(`${apiBaseUrl}/register/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+
+                alert("Пользователь успешно создан");
+                e.target.reset();
+                fetchUsers();
+            } catch (error) {
+                console.error("Ошибка при создании пользователя:", error);
+                alert(error.message);
+            }
+        });
+
+        document.getElementById("update-client-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const userId = document.getElementById("update-client-id").value;
+                const formData = {
+                    client_id: document.getElementById("update-client_id").value,
+                    email: document.getElementById("update-email").value,
+                    full_name: document.getElementById("update-full_name").value,
+                    access_key: document.getElementById("update-access_key").value
+                };
+                const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                alert("Пользователь успешно обновился");
+                e.target.reset();
+                fetchUsers();
+            } catch (error) {
+                console.error("Ошибка при обновлении пользователя:", error);
+                alert(error.message);
+            }
+        });
+
+        document.getElementById("delete-client-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            try {
+                const userId = document.getElementById("delete-client-id").value;
+                const response = await fetch(`${apiBaseUrl}/users/${userId}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                alert("Пользователь успешно удален");
+                e.target.reset();
+                fetchUsers();
+            } catch (error) {
+                console.error("Ошибка при удалении пользователя:", error);
+                alert(error.message);
+            }
+        });
+
+        document.getElementById("signin-form").addEventListener("submit", async function (event) {
+            event.preventDefault();
+            try {
+                const client_id = document.getElementById("signin-client_id").value;
+                const access_key = document.getElementById("signin-access_key").value;
+                const response = await fetch(`${apiBaseUrl}/token`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded",
+                    },
+                    body: new URLSearchParams({
+                        grant_type: "access_key",
+                        client_id: client_id,
+                        access_key: access_key,
+                    })
+                });
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.detail || 'Ошибка входа');
+                }
+                const data = await response.json();
+                accessToken = data.access_token;
+                localStorage.setItem('accessToken', accessToken);
+                updateUIState();
+                event.target.reset();
+            } catch (error) {
+                console.error("Ошибка входа в систему:", error);
+                alert(error.message);
+            }
+        });
+
+        document.getElementById("logout-button").addEventListener("click", () => {
+            accessToken = null;
+            localStorage.removeItem('accessToken');
+            updateUIState();
+        });
+
+        async function getUserInfo() {
+            try {
+                if (!accessToken) {
+                    throw new Error('Please log in first');
+                }
+                const response = await fetch(`${apiBaseUrl}/users/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Accept': 'application/json'
+                    }
+                });
+                if (!response.ok) {
+                    await handleApiError(response);
+                    return;
+                }
+                const data = await response.json();
+                const userInfoElement = document.getElementById('userInfo');
+                userInfoElement.innerHTML = `
+                    <div class="client-info">
+                        <p><strong>Username:</strong> ${data.client_id}</p>
+                        <p><strong>Email:</strong> ${data.email}</p>
+                        <p><strong>Full Label:</strong> ${data.full_name || 'Not provided'}</p>
+                        <p><strong>ID:</strong> ${data.id}</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error("Ошибка при получении информации о пользователе:", error);
+                document.getElementById('userInfo').innerHTML = `<p class="error">${error.message}</p>`;
+            }
+        }
+
+        document.getElementById("get-client-info").addEventListener("click", getUserInfo);
+
+        updateUIState();
+    </script>
+</body>
+
+</html>
